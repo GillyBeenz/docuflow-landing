@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Docuflow – Email verified</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+</head>
+<body style="font-family:sans-serif;text-align:center;padding:4rem;">
+  <h1>Thanks for verifying!</h1>
+  <p>If you are not redirected automatically, <a id="continue" href="https://gillybeenz.github.io/docuflow-landing/">click here</a>.</p>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect_to') || 'https://gillybeenz.github.io/docuflow-landing/';
+    document.getElementById('continue').href = redirect;
+  </script>
+</body>
+</html>
