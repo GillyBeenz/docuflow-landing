@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Docuflow – Email verified</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>Docuflow Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; padding: 3rem; }
+  </style>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding:4rem;">
-  <h1>Thanks for verifying!</h1>
-  <p>If you are not redirected automatically, <a id="continue" href="https://gillybeenz.github.io/docuflow-landing/">click here</a>.</p>
+<body>
+  <h1>Thanks for confirming!</h1>
+  <p>Opening the app now…</p>
   <script>
     const params = new URLSearchParams(location.search);
-    const redirect = params.get('redirect_to') || 'https://gillybeenz.github.io/docuflow-landing/';
-    document.getElementById('continue').href = redirect;
+    const token = params.get('token');
+    const type = params.get('type') || 'signup';
+    if (token) {
+      window.location.replace(`docuflow://verify?type=${type}&token=${token}`);
+    } else {
+      document.body.insertAdjacentHTML('beforeend', '<p>Please go back to the app.</p>');
+    }
   </script>
+  <p>If nothing happens, copy this link into your browser:</p>
+  <p><code>docuflow://verify?type=signup&token=&lt;TOKEN&gt;</code></p>
 </body>
 </html>
