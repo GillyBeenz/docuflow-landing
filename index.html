@@ -1,77 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-  const supabase = createClient('https://<your-project>.supabase.co', 'c9f21e3035c6e3e476013eb6f58fd49601567eef544bf7c5d915ec67d5b8d993');
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const type = params.get('type') || 'signup';
-  if (token) {
-    supabase.auth.verifyOtp({ type, token }).then(() => {
-      window.location.replace(`docuflow://verify?type=${type}&token=${token}`);
-    }).catch(() => {
-      document.getElementById('message').textContent = 'Link expired or invalid.';
-    });
-  }
-</script>
-  <head>
+<head>
   <meta charset="UTF-8" />
   <title>Docuflow Email Verified</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="https://docuflow.app/favicon.ico" />
   <style>
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: linear-gradient(180deg, #f6f3ff, #fff);
-      color: #111827;
-      min-height: 100vh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      padding: 2rem;
-    }
-    .card {
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      padding: 2.5rem;
-      border-radius: 24px;
-      background: #fff;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-    }
-    .logo {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1.5rem;
-    }
-    h1 {
-      margin-bottom: 0.5rem;
-      font-size: 1.75rem;
-      color: #241b66;
-    }
-    p {
-      color: #4b5563;
-      margin-bottom: 2rem;
-    }
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.85rem 1.8rem;
-      border-radius: 999px;
-      background: #6d4bff;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
+    /* your existing styles */
   </style>
 </head>
 <body>
   <div class="card">
     <img class="logo" src="https://docuflow.app/icon-512.png" alt="Docuflow icon" />
     <h1>Email verified</h1>
-    <p>Your Docuflow account is confirmed. Reopen the app and sign in with your new credentials.</p>
-    
+    <p id="status">Your Docuflow account is confirmed. Reopen the app and sign in with your new credentials.</p>
+    <a class="button" id="go-app" href="#">Reopen Docuflow</a>
   </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const supabase = createClient(
+      'https://eyommekexyuccgoodbrc.supabase.co',
+      'c9f21e3035c6e3e476013eb6f58fd49601567eef544bf7c5d915ec67d5b8d993'
+    );
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    const type = params.get('type') || 'signup';
+    const statusEl = document.getElementById('status');
+    const button = document.getElementById('go-app');
+
+    button.href = `docuflow://verify?type=${type}&token=${token || ''}`;
+
+    if (token) {
+      supabase.auth.verifyOtp({ type, token })
+        .then(() => {
+          statusEl.textContent = 'Thanks—your email is confirmed! Open the app to continue.';
+          button.textContent = 'Open Docuflow';
+          window.location.replace(button.href);
+        })
+        .catch(() => {
+          statusEl.textContent = 'That link expired. Request a new confirmation email.';
+          button.textContent = 'Retry';
+        });
+    } else {
+      statusEl.textContent = 'Open the email on the device where you installed Docuflow and try again.';
+    }
+  </script>
 </body>
 </html>
