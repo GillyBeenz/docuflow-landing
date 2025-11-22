@@ -29,9 +29,9 @@
     const statusEl = document.getElementById('status');
     const button = document.getElementById('go-app');
 
-    button.href = `docuflow://verify?type=${type}&token=${token || ''}`;
+   button.href = `docuflow://verify?type=${type}&token=${token || ''}`;
 
-    if (token) {
+    if (type && token) {
       supabase.auth.verifyOtp({ type, token })
         .then(() => {
           statusEl.textContent = 'Thanks—your email is confirmed! Open the app to continue.';
