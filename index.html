@@ -2,26 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Docuflow Verification</title>
+  <title>Docuflow Email Verified</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="https://docuflow.app/favicon.ico" />
   <style>
-    body { font-family: system-ui, sans-serif; text-align: center; padding: 3rem; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(180deg, #f6f3ff, #fff);
+      color: #111827;
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+    .card {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      padding: 2.5rem;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+    }
+    h1 {
+      margin-bottom: 0.5rem;
+      font-size: 1.75rem;
+      color: #241b66;
+    }
+    p {
+      color: #4b5563;
+      margin-bottom: 2rem;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.8rem;
+      border-radius: 999px;
+      background: #6d4bff;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
-  <h1>Thanks for confirming!</h1>
-  <p>Opening the app now…</p>
-  <script>
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const type = params.get('type') || 'signup';
-    if (token) {
-      window.location.replace(`docuflow://verify?type=${type}&token=${token}`);
-    } else {
-      document.body.insertAdjacentHTML('beforeend', '<p>Please go back to the app.</p>');
-    }
-  </script>
-  <p>If nothing happens, copy this link into your browser:</p>
-  <p><code>docuflow://verify?type=signup&token=&lt;TOKEN&gt;</code></p>
+  <div class="card">
+    <img class="logo" src="https://docuflow.app/icon-512.png" alt="Docuflow icon" />
+    <h1>Email verified</h1>
+    <p>Your Docuflow account is confirmed. Reopen the app and sign in with your new credentials.</p>
+    <a class="button" href="docuflow://verify?type=signup&token={{ .Token }}">Return to Docuflow</a>
+  </div>
 </body>
 </html>
