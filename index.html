@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient('https://<your-project>.supabase.co', 'c9f21e3035c6e3e476013eb6f58fd49601567eef544bf7c5d915ec67d5b8d993');
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const type = params.get('type') || 'signup';
+  if (token) {
+    supabase.auth.verifyOtp({ type, token }).then(() => {
+      window.location.replace(`docuflow://verify?type=${type}&token=${token}`);
+    }).catch(() => {
+      document.getElementById('message').textContent = 'Link expired or invalid.';
+    });
+  }
+</script>
+  <head>
   <meta charset="UTF-8" />
   <title>Docuflow Email Verified</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
