@@ -1,51 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Docuflow Email Verified</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="https://docuflow.app/favicon.ico" />
-  <style>
-    /* your existing styles */
-  </style>
-</head>
-<body>
-  <div class="card">
-    <img class="logo" src="https://docuflow.app/icon-512.png" alt="Docuflow icon" />
-    <h1>Email verified</h1>
-    <p id="status">Your Docuflow account is confirmed. Reopen the app and sign in with your new credentials.</p>
-    <a class="button" id="go-app" href="#">Reopen Docuflow</a>
-  </div>
+<script type="module">
+  // After Supabase confirms the email, it redirects here with #access_token in the URL
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const accessToken = hashParams.get('access_token');
+  const type = hashParams.get('type');
+  
+  const statusEl = document.getElementById('status');
+  const button = document.getElementById('go-app');
 
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-    const supabase = createClient(
-      'https://eyommekexyuccgoodbrc.supabase.co',
-      'sb_publishable_5fQ-ph0oO-bdYUcyBKtvbw_Gt3fLsHt'
-    );
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const type = params.get('type') || 'signup';
-    const statusEl = document.getElementById('status');
-    const button = document.getElementById('go-app');
-
-   button.href = `docuflow://verify?type=${type}&token=${token || ''}`;
-
-    if (type && token) {
-      supabase.auth.verifyOtp({ type, token })
-        .then(() => {
-          statusEl.textContent = 'Thanks—your email is confirmed! Open the app to continue.';
-          button.textContent = 'Open Docuflow';
-          window.location.replace(button.href);
-        })
-       .catch((err) => {
-            console.error('verifyOtp failed', err);
-            statusEl.textContent = 'That link expired. Request a new confirmation email.';
-            button.textContent = 'Retry';
-        });
-    } else {
-      statusEl.textContent = 'Open the email on the device where you installed Docuflow and try again.';
-    }
-  </script>
-</body>
-</html>
+  if (accessToken && type === 'signup') {
+    // Email confirmed successfully by Supabase
+    statusEl.textContent = 'Thanks—your email is confirmed! Opening the app...';
+    button.textContent = 'Open Docuflow';
+    button.href = 'docuflow://verify?confirmed=true';
+    
+    // Auto-redirect to app after 2 seconds
+    setTimeout(() => {
+      window.location.replace(button.href);
+    }, 2000);
+  } else {
+    statusEl.textContent = 'Click the confirmation link in your email to verify your account.';
+    button.style.display = 'none';
+  }
+</script>
