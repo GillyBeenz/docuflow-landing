@@ -1,24 +1,125 @@
-<script type="module">
-  // After Supabase confirms the email, it redirects here with #access_token in the URL
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  const accessToken = hashParams.get('access_token');
-  const type = hashParams.get('type');
-  
-  const statusEl = document.getElementById('status');
-  const button = document.getElementById('go-app');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docuflow - Email Confirmed</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 2em;
+    }
+    p {
+      font-size: 1.1em;
+      margin: 15px 0;
+      opacity: 0.9;
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 15px 30px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .error {
+      background: rgba(255, 59, 48, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">✓ Email Confirmed!</h1>
+    <div id="spinner" class="spinner"></div>
+    <p id="status">Opening Docuflow app...</p>
+    <a id="fallback-link" href="docuflow://verify?confirmed=true" class="button" style="display:none;">
+      Open Docuflow App
+    </a>
+  </div>
 
-  if (accessToken && type === 'signup') {
-    // Email confirmed successfully by Supabase
-    statusEl.textContent = 'Thanks—your email is confirmed! Opening the app...';
-    button.textContent = 'Open Docuflow';
-    button.href = 'docuflow://verify?confirmed=true';
-    
-    // Auto-redirect to app after 2 seconds
-    setTimeout(() => {
-      window.location.replace(button.href);
-    }, 2000);
-  } else {
-    statusEl.textContent = 'Click the confirmation link in your email to verify your account.';
-    button.style.display = 'none';
-  }
-</script>
+  <script>
+    const supabaseUrl = 'https://eyommekexyuccgoodbrc.supabase.co'
+    const supabaseKey = 'sb_publishable_5fQ-ph0oO-bdYUcyBKtvbw_Gt3fLsHt'
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+    const titleEl = document.getElementById('title')
+    const statusEl = document.getElementById('status')
+    const spinnerEl = document.getElementById('spinner')
+    const fallbackEl = document.getElementById('fallback-link')
+
+    // Supabase redirects here with session in URL hash after email confirmation
+    const hashParams = new URLSearchParams(window.location.hash.substring(1))
+    const accessToken = hashParams.get('access_token')
+    const type = hashParams.get('type')
+
+    if (accessToken && type === 'signup') {
+      // Email confirmed successfully by Supabase
+      statusEl.textContent = 'Redirecting to app in 2 seconds...'
+      
+      // Try automatic redirect
+      setTimeout(() => {
+        window.location.href = 'docuflow://verify?confirmed=true'
+        
+        // Show fallback link after 3 seconds if redirect didn't work
+        setTimeout(() => {
+          spinnerEl.style.display = 'none'
+          statusEl.textContent = 'If the app didn\'t open automatically, click the button below:'
+          fallbackEl.style.display = 'inline-block'
+        }, 3000)
+      }, 2000)
+      
+    } else {
+      // No session found - something went wrong
+      spinnerEl.style.display = 'none'
+      titleEl.textContent = '⚠ Invalid Link'
+      statusEl.innerHTML = '<div class="error">This confirmation link is invalid or has expired.<br>Please try signing up again.</div>'
+    }
+  </script>
+</body>
+</html>
