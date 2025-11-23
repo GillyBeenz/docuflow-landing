@@ -21,7 +21,7 @@
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     const supabase = createClient(
       'https://eyommekexyuccgoodbrc.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5b21tZWtleHl1Y2Nnb29kYnJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3NzczNzQsImV4cCI6MjA3ODM1MzM3NH0.dAvO9GOt_o4yZWbT5hQX6fEtfowSrvyF_y6TSNuHDR8'
+      'sb_publishable_5fQ-ph0oO-bdYUcyBKtvbw_Gt3fLsHt'
     );
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
@@ -38,9 +38,10 @@
           button.textContent = 'Open Docuflow';
           window.location.replace(button.href);
         })
-        .catch(() => {
-          statusEl.textContent = 'That link expired. Request a new confirmation email.';
-          button.textContent = 'Retry';
+       .catch((err) => {
+            console.error('verifyOtp failed', err);
+            statusEl.textContent = 'That link expired. Request a new confirmation email.';
+            button.textContent = 'Retry';
         });
     } else {
       statusEl.textContent = 'Open the email on the device where you installed Docuflow and try again.';
